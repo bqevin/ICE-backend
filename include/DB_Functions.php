@@ -3,7 +3,7 @@
 /**
  * @author Ravi Tamada
  * @link http://www.androidhive.info/2012/01/android-login-and-registration-with-php-mysql-and-sqlite/ Complete tutorial
- * Added update functions by @author Kevin Barasa / kevin.barasa001@gmail.com
+ * Added edit functions by @author Kevin Barasa / kevin.barasa001@gmail.com
  */
  
 class DB_Functions {
@@ -57,11 +57,11 @@ class DB_Functions {
     * Storing user updates
     * returns all info
     */
-    public function updateUser($email, $blood, $phone, $allergy, $condition) {
+    public function updateUser($email, $blood, $phone, $allergy, $problem) {
  
-        $stmt = $this->conn->prepare("UPDATE users SET blood=?, phone=?, allergy=?, condition=?, updated_at=NOW() WHERE email=?");
+        $stmt = $this->conn->prepare("UPDATE users SET blood=?, phone=?, allergy=?, problem=?, updated_at=NOW() WHERE email=?");
         // bind parameters
-        $stmt->bind_param("sdsss", $blood,$phone,$allergy,$condition,$email);
+        $stmt->bind_param("sdsss", $blood,$phone,$allergy,$problem,$email);
         // execute the query
         $result = $stmt->execute();
         $stmt->close();

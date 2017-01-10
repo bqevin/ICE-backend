@@ -54,6 +54,35 @@ class DB_Functions {
 
 
     /**
+     * Storing new ICE contact
+     * returns user details
+     */
+    public function storeICE($name, $email, $phone, $blood) {
+        $uuid = uniqid('', true);
+        $hash = $this->hashSSHA($phone);
+        $encrypted_password = $hash["encrypted"]; // encrypted password
+        $salt = $hash["salt"]; // salt
+ 
+        $stmt = $this->conn->prepare("INSERT INTO ice_contact(unique_id, name, email, phone, blood, encrypted_password, salt, created_at) VALUES(?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->bind_param("sssdsss", $uuid, $name, $email,$phone, $blood, $encrypted_password, $salt);
+        $result = $stmt->execute();
+        $stmt->close();
+ 
+        // check for successful store
+        if ($result) {
+            $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $user = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+ 
+            return $user;
+        } else {
+            return false;
+        }
+    }
+
+    /**
     * Storing user updates
     * returns all info
     */
@@ -128,6 +157,29 @@ class DB_Functions {
             return false;
         }
     }
+    /**
+     * Check ICE is existed or not
+     */
+    public function isICEExisted($email) {
+        $stmt = $this->conn->prepare("SELECT email from ice_contact WHERE email = ?");
+ 
+        $stmt->bind_param("s", $email);
+ 
+        $stmt->execute();
+ 
+        $stmt->store_result();
+ 
+        if ($stmt->num_rows > 0) {
+            // user existed 
+            $stmt->close();
+            return true;
+        } else {
+            // user not existed
+            $stmt->close();
+            return false;
+        }
+    }
+
  
     /**
      * Encrypting password

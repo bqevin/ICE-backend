@@ -6,16 +6,17 @@ $db = new DB_Functions();
 // json response array
 $response = array("error" => FALSE);
  
-if (isset($_POST['bio']) && isset($_POST['phone']) && isset($_POST['location']) && isset($_POST['email'])) {
+if (isset($_POST['condition'] && $_POST['blood']) && isset($_POST['phone']) && isset($_POST['allergy']) && isset($_POST['email'])) {
  
     // receiving the post params
-    $bio = $_POST['bio'];
+    $blood = $_POST['blood'];
     $phone = $_POST['phone'];
-    $location = $_POST['location'];
+    $allergy = $_POST['allergy'];
+    $condition = $_POST['condition'];
     $email = $_POST['email'];
  
     // Update the user info
-    $user = $db->updateUser($email, $bio, $phone, $location);
+    $user = $db->updateUser($email, $blood, $phone, $allergy, $condition);
     if ($user) {
         // user stored successfully
         $response["error"] = FALSE;
@@ -24,9 +25,10 @@ if (isset($_POST['bio']) && isset($_POST['phone']) && isset($_POST['location']) 
         $response["user"]["email"] = $user["email"];
         $response["user"]["created_at"] = $user["created_at"];
         $response["user"]["updated_at"] = $user["updated_at"];
-        $response["user"]["bio"] = $user["bio"];
+        $response["user"]["blood"] = $user["blood"];
         $response["user"]["phone"] = $user["phone"];
-        $response["user"]["location"] = $user["location"];
+        $response["user"]["allergy"] = $user["allergy"];
+        $response["user"]["condition"] = $user["condition"];
         echo json_encode($response);
     } else {
         // user failed to store
@@ -37,7 +39,7 @@ if (isset($_POST['bio']) && isset($_POST['phone']) && isset($_POST['location']) 
 
 } else {
     $response["error"] = TRUE;
-    $response["error_msg"] = "Required parameters (bio, phone or location) is missing!";
+    $response["error_msg"] = "Required parameters (blood type, phone, condition or allergy) is missing!";
     echo json_encode($response);
 }
 ?>

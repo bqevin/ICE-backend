@@ -22,9 +22,10 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         $response["user"]["name"] = $user["name"];
         $response["user"]["email"] = $user["email"];
         $response["user"]["created_at"] = $user["created_at"];
-        $response["user"]["bio"] = $user["bio"];
+        $response["user"]["blood"] = $user["blood"];
         $response["user"]["phone"] = $user["phone"];
-        $response["user"]["location"] = $user["location"];
+        $response["user"]["allergy"] = $user["allergy"];
+        $response["user"]["problem"] = $user["problem"];
         $response["user"]["updated_at"] = $user["updated_at"];
         echo json_encode($response);
     } else {

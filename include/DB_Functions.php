@@ -70,7 +70,7 @@ class DB_Functions {
  
         // check for successful store
         if ($result) {
-            $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = ?");
+            $stmt = $this->conn->prepare("SELECT * FROM ice_contact WHERE email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $user = $stmt->get_result()->fetch_assoc();

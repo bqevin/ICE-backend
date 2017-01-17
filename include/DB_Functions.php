@@ -57,14 +57,14 @@ class DB_Functions {
      * Storing new ICE contact
      * returns user details
      */
-    public function storeICE($name, $email, $phone, $blood) {
+    public function storeICE($name, $email, $phone, $blood, $parent) {
         $uuid = uniqid('', true);
         $hash = $this->hashSSHA($phone);
         $encrypted_password = $hash["encrypted"]; // encrypted password
         $salt = $hash["salt"]; // salt
  
-        $stmt = $this->conn->prepare("INSERT INTO ice_contact(unique_id, name, email, phone, blood, encrypted_password, salt, created_at) VALUES(?, ?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->bind_param("sssdsss", $uuid, $name, $email,$phone, $blood, $encrypted_password, $salt);
+        $stmt = $this->conn->prepare("INSERT INTO ice_contact(unique_id, name, email, phone, blood, parent, encrypted_password, salt, created_at) VALUES(?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->bind_param("sssdssss", $uuid, $name, $email,$phone, $blood, $parent, $encrypted_password, $salt);
         $result = $stmt->execute();
         $stmt->close();
  
@@ -160,10 +160,10 @@ class DB_Functions {
     /**
      * Check ICE is existed or not
      */
-    public function isICEExisted($email) {
-        $stmt = $this->conn->prepare("SELECT email from ice_contact WHERE email = ?");
+    public function isICEExisted($email, $parent) {
+        $stmt = $this->conn->prepare("SELECT email from ice_contact WHERE email = ? AND parent = ?");
  
-        $stmt->bind_param("s", $email);
+        $stmt->bind_param("ss", $email, $parent);
  
         $stmt->execute();
  

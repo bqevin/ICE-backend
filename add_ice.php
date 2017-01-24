@@ -1,19 +1,27 @@
 <?php
+require_once 'include/rb.php';
 require_once 'include/DB_Functions.php';
+
 $db = new DB_Functions();
-// json response array
+
+R::setup('mysql:host=localhost; dbname=agrigen_emergency','agrigen_kevin','Kevcom2015');
+R::setAutoResolve( TRUE );
+
 $response = array("error" => FALSE);
  
-if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['phone']) && isset($_POST['blood'])) {
+if (isset($_POST['name']) ) {
+    $bean = R::dispense('ice_contact');
  
     // receiving the post params
-    $name = $_POST['name'];
     $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $blood = $_POST['blood'];
     $parent = $_POST['parent'];
- 
-    
+
+    $bean->email = $email;
+    $bean->parent = $parent;
+    $bean->name = $_POST['name'];
+    $bean->phone = $_POST['phone'];
+    $bean->blood = $_POST['blood'];
+
     // check if user is already existed with the same email
     if ($db->isICEExisted($email, $parent)) {
         // user already existed
@@ -22,18 +30,9 @@ if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['phone']) &&
         echo json_encode($response);
     } else {
         // create a new user
-        $user = $db->storeICE($name, $email, $phone, $blood, $parent);
-        if ($user) {
+        if ($id = R::store($bean)) {
             // user stored successfully
-            $response["error"] = FALSE;
-            $response["uid"] = $user["unique_id"];
-            $response["user"]["name"] = $user["name"];
-            $response["user"]["email"] = $user["email"];
-            $response["user"]["created_at"] = $user["created_at"];
-            $response["user"]["blood"] = $user["blood"];
-            $response["user"]["parent"] = $user["parent"];
-            $response["user"]["phone"] = $user["phone"];
-            $response["user"]["updated_at"] = $user["updated_at"];
+            $response = R::load('ice_contact',$id);
             echo json_encode($response);
         } else {
             // user failed to store

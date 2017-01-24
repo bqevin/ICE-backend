@@ -9,7 +9,7 @@ R::setAutoResolve( TRUE );
 
 $response = array("error" => FALSE);
  
-if (isset($_POST['name']) ) {
+if ( isset($_POST['name']) && isset($_POST['email']) && isset($_POST['phone']) && isset($_POST['blood']) ) {
     $bean = R::dispense('ice_contact');
  
     // receiving the post params
